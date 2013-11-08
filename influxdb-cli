@@ -1,0 +1,74 @@
+#!/usr/bin/env node
+
+var _ = require('lodash');
+var Cli = require('./Cli');
+var Table = require('cli-table');
+var argv = require('optimist').usage('InfluxDB SQL CLI\nUsage: $0');
+var DEFAULTS = {
+  hostname: {
+    args: ['h', 'hostname'],
+    description: 'Host [%s]',
+    value: 'localhost'
+  },
+  port: {
+    args: ['port'],
+    description: 'Port [%s]',
+    value: 8086
+  },
+  user: {
+    args: ['u', 'user'],
+    description: 'User [%s]',
+    value: 'root'
+  },
+  password: {
+    args: ['p', 'password'],
+    description: 'Password [%s]',
+    value: 'root'
+  },
+  database: {
+    args: ['d', 'database'],
+    description: 'Database [%s]',
+    value: 'db'
+  }
+};
+
+_.forEach(DEFAULTS, function(v, k) {
+  argv.describe(v.args[0], v.description);
+  if (v.args.length > 1) {
+    argv.alias.apply(argv, v.args);
+  }
+  argv['default'](v.args[0], v.value);
+  // p.option(v.args, v.description.replace('%s', v.value), v.value);
+});
+
+if (argv.argv.help) {
+  console.log(argv.help());
+  return process.exit(0);
+}
+
+argv = argv.argv;
+
+var PROMPT = 'Influx>';
+
+Cli(PROMPT, argv.hostname, argv.port, argv.user, argv.password, argv.database, function(err, res) {
+  if (err) {
+    return console.error(PROMPT, '✘', err.toString());
+  }
+
+  if (!Array.isArray(res)) {
+    return console.log(PROMPT, res);
+  }
+
+  res.forEach(function(table) {
+    var asciitable = new Table({
+      head: table.columns,
+      style: {
+        compact: true
+      }
+    });
+
+    asciitable.push.apply(asciitable, table.points);
+
+    console.log(asciitable.toString());
+  });
+});
