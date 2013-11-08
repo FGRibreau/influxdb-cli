@@ -1,6 +1,8 @@
 InfluxDB-CLI
 ============
 
+SQL CLI for InfluxDB
+
 ### Installation
 ```shell
 npm install influxdb-cli
