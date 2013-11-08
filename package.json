@@ -4,7 +4,7 @@
   "description": "~SQL CLI for Influxdb",
   "main": "Cli.js",
   "bin": {
-    "influxdb-cli"
+    "influxdb-cli": "influxdb-cli"
   },
   "author": {
     "name": "Francois-Guillaume Ribreau",
