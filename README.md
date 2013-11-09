@@ -1,4 +1,4 @@
-InfluxDB-CLI [![Gittip](http://badgr.co/gittip/fgribreau.png)](https://www.gittip.com/fgribreau/)
+InfluxDB-CLI [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/FGRibreau/influxdb-cli/trend.png)](https://bitdeli.com/free "Bitdeli Badge") [![Gittip](http://badgr.co/gittip/fgribreau.png)](https://www.gittip.com/fgribreau/)
 ============
 
 SQL CLI for InfluxDB
