@@ -8,7 +8,13 @@ SQL CLI for InfluxDB
 npm install influxdb-cli
 ```
 
-### Usage
+### Screencast
+
+[![screencast](http://i.imgur.com/VpCXxlm.gif)](http://showterm.io/0cec86260d6a74f636907#slow)
+
+[Showterm Terminal recording](http://showterm.io/0cec86260d6a74f636907#slow)
+
+### Options
 
 ```shell
 InfluxDB SQL CLI
@@ -22,7 +28,7 @@ Options:
   -d, --database  Database [%s]  [default: "db"]
 ```
 
-### Example
+### Usage
 
 ```shell
 influxdb-cli -d redsmin -u user -p password
