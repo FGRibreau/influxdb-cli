@@ -1,4 +1,4 @@
-InfluxDB-CLI
+InfluxDB-CLI [![Gittip](http://badgr.co/gittip/fgribreau.png)](https://www.gittip.com/fgribreau/)
 ============
 
 SQL CLI for InfluxDB
