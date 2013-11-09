@@ -5,7 +5,7 @@ SQL CLI for InfluxDB
 
 ### Installation
 ```shell
-npm install influxdb-cli
+npm install influxdb-cli -g
 ```
 
 ### Screencast
