@@ -59,7 +59,7 @@ With `--pretty` activated
 influxdb-cli -d redsmin -u user -p password --pretty
 redsmin> Connecting to http://localhost:8086/db/redsmin ...
 redsmin> ✔ ready
-redsmin> sELECT used_memory, used_memory_lua, used_memory_peak from info limit 10;
+redsmin> SELECT used_memory, used_memory_lua, used_memory_peak from info limit 10;
 ┌──────────────────┬─────────────────┬─────────────┬─────────────────┬──────────────────┐
 │       time       │ sequence_number │ used_memory │ used_memory_lua │ used_memory_peak │
 ├──────────────────┼─────────────────┼─────────────┼─────────────────┼──────────────────┤
@@ -78,5 +78,5 @@ redsmin>
 ```
 ### Commands
 
-`use [dbname]`: switch to database `dbname`.
-`quit`|`exit` : quit the cli
+- `use [dbname]`: switch to database `dbname`.
+- `quit`|`exit` : quit the cli
