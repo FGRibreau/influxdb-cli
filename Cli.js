@@ -24,9 +24,13 @@ module.exports = function Cli(prompt, host, port, user, password, database, fPri
 
   rl.setPrompt(prompt);
 
-  var client = Client(host, port, user, password, database);
+  var client = new Client(host, port, user, password, database);
 
   fPrint(null, ['Connecting to ', 'http://', host, ':', port, '/db/', database, ' ...'].join(''));
+
+  client.on('quit', function(){
+    return process.exit(1);
+  });
 
   client.existDatabase(database, function(err, exist) {
     if (err) {
