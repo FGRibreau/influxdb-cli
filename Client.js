@@ -7,6 +7,10 @@ var EventEmitter = require('events').EventEmitter;
 
 function Client(host, port, user, password, database) {
   EventEmitter.call(this);
+  this.host = host;
+  this.port = port;
+  this.user = user;
+  this.password = password;
   this.database = database;
 }
 

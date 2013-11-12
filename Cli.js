@@ -13,7 +13,7 @@ function startRepl(fprompt, client, fPrint) {
     rl.pause();
 
     client.query(query, {}, function(err, res) {
-      fPrint(err, res);
+      fPrint(prompt, err, res);
       rl.resume();
       setImmediate(startRepl.bind(null, fprompt, client, fPrint));
     });

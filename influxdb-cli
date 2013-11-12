@@ -42,6 +42,9 @@ _.forEach(DEFAULTS, function(v, k) {
   // p.option(v.args, v.description.replace('%s', v.value), v.value);
 });
 
+argv.boolean('pretty').describe('pretty', 'Display time in a human readable way');
+argv['default']('pretty', false);
+
 if (argv.argv.help) {
   console.log(argv.help());
   return process.exit(0);
@@ -63,14 +66,23 @@ Cli(function prompt(database_name) {
     }
 
     if (res === undefined || res === null) {
-      return;
+      return console.log(prompt, "(empty result)");
     }
+
 
     if (!Array.isArray(res)) {
       return console.log(prompt, res);
     }
 
     res.forEach(function(table) {
+      if (argv.pretty) {
+        table.points.forEach(function(point) {
+          var d = new Date(point[0]);
+          point[0] = d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear().toString().substring(2) + ' ' + d.toTimeString().substring(0, 8);
+        });
+        table.columns[0] = '      time     ';
+      }
+
       var asciitable = new Table({
         head: table.columns,
         style: {
