@@ -1,14 +1,20 @@
-InfluxDB-CLI
+InfluxDB-CLI [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/FGRibreau/influxdb-cli/trend.png)](https://bitdeli.com/free "Bitdeli Badge") [![Gittip](http://badgr.co/gittip/fgribreau.png)](https://www.gittip.com/fgribreau/)
 ============
 
 SQL CLI for InfluxDB
 
 ### Installation
 ```shell
-npm install influxdb-cli
+npm install influxdb-cli -g
 ```
 
-### Usage
+### Screencast
+
+[![screencast](http://i.imgur.com/VpCXxlm.gif)](http://showterm.io/0cec86260d6a74f636907#slow)
+
+[Showterm Terminal recording](http://showterm.io/0cec86260d6a74f636907#slow)
+
+### Options
 
 ```shell
 InfluxDB SQL CLI
@@ -22,7 +28,7 @@ Options:
   -d, --database  Database [%s]  [default: "db"]
 ```
 
-### Example
+### Usage
 
 ```shell
 influxdb-cli -d redsmin -u user -p password
