@@ -4,6 +4,7 @@ var _ = require('lodash');
 var Cli = require('./Cli');
 var Table = require('cli-table');
 var argv = require('optimist').usage('InfluxDB SQL CLI\nUsage: $0');
+
 var DEFAULTS = {
   hostname: {
     args: ['h', 'hostname'],
@@ -48,31 +49,37 @@ if (argv.argv.help) {
 
 argv = argv.argv;
 
-var PROMPT = 'Influx>';
+Cli(function prompt(database_name) {
+    return database_name + '>';
+  },
+  argv.hostname,
+  argv.port,
+  argv.user,
+  argv.password,
+  argv.database,
+  function print(prompt, err, res) {
+    if (err) {
+      return console.error(prompt, '✘', err.toString());
+    }
 
-Cli(PROMPT, argv.hostname, argv.port, argv.user, argv.password, argv.database, function(err, res) {
-  if (err) {
-    return console.error(PROMPT, '✘', err.toString());
-  }
+    if (res === undefined || res === null) {
+      return;
+    }
 
-  if (res === undefined || res === null) {
-    return;
-  }
+    if (!Array.isArray(res)) {
+      return console.log(prompt, res);
+    }
 
-  if (!Array.isArray(res)) {
-    return console.log(PROMPT, res);
-  }
+    res.forEach(function(table) {
+      var asciitable = new Table({
+        head: table.columns,
+        style: {
+          compact: true
+        }
+      });
 
-  res.forEach(function(table) {
-    var asciitable = new Table({
-      head: table.columns,
-      style: {
-        compact: true
-      }
+      asciitable.push.apply(asciitable, table.points);
+
+      console.log(asciitable.toString());
     });
-
-    asciitable.push.apply(asciitable, table.points);
-
-    console.log(asciitable.toString());
   });
-});

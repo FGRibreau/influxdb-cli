@@ -26,12 +26,20 @@ module.exports = {
 
   'use [dbname];': function(t) {
     var NEW_DB = 'hey';
-    c.query('use ' + NEW_DB, {}, function(err, database) {
+    c.query('use ' + NEW_DB, {}, function(err) {
       t.strictEqual(err, null);
-      t.strictEqual(database, NEW_DB);
       t.equal(c.getCurrentDatabase(), NEW_DB);
       t.done();
     });
+  },
+
+  'use [dbname]; should emit a change:database event': function(t) {
+    var NEW_DB = 'hey';
+    c.on('change:database', function(database_name) {
+      t.equal(database_name, NEW_DB);
+      t.done();
+    });
+    c.query('use ' + NEW_DB);
   },
 
   'quit': function(t) {
@@ -39,6 +47,16 @@ module.exports = {
       t.done();
     });
     c.query('quit');
+  },
+
+  'use': function(t) {
+    c.on('quit', function() {
+      throw new Error("should not be called");
+    });
+
+    c.query('use', {}, function() {
+      t.done();
+    });
   },
 
   'exit': function(t) {

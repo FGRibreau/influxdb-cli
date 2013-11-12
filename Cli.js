@@ -7,45 +7,54 @@ var rl = readline.createInterface({
 });
 var Client = require('./Client');
 
-function startRepl(prompt, client, fPrint) {
+function startRepl(fprompt, client, fPrint) {
+  var prompt = fprompt(client.getCurrentDatabase());
   rl.question(prompt + ' ', function(query) {
     rl.pause();
 
     client.query(query, {}, function(err, res) {
       fPrint(err, res);
       rl.resume();
-      setImmediate(startRepl.bind(null, prompt, client, fPrint));
+      setImmediate(startRepl.bind(null, fprompt, client, fPrint));
     });
   });
 }
 
-module.exports = function Cli(prompt, host, port, user, password, database, fPrint) {
+function Cli(fprompt, host, port, user, password, database, fPrint) {
   fPrint = fPrint || console.log.bind(console);
+
+  var client = new Client(host, port, user, password, database);
+  var prompt = fprompt(client.getCurrentDatabase());
 
   rl.setPrompt(prompt);
 
-  var client = new Client(host, port, user, password, database);
+  fPrint(prompt, null, ['Connecting to ', 'http://', host, ':', port, '/db/', database, ' ...'].join(''));
 
-  fPrint(null, ['Connecting to ', 'http://', host, ':', port, '/db/', database, ' ...'].join(''));
+  client.on('change:database', function(database_name) {
+    rl.setPrompt(fprompt(database_name));
+  });
 
-  client.on('quit', function(){
+  client.on('quit', function() {
+    console.log('Quit');
     return process.exit(1);
   });
 
   client.existDatabase(database, function(err, exist) {
     if (err) {
-      fPrint(err);
+      fPrint(prompt, err);
       return process.exit(1);
     }
 
     if (!exist) {
-      fPrint(['Database', database, 'does not exist in InfluxDB'].join(' '));
+      fPrint(prompt, ['Database', database, 'does not exist in InfluxDB'].join(' '));
       return process.exit(1);
     }
 
-    fPrint(null, ['✔', 'ready'].join(' '));
+    fPrint(prompt, null, ['✔', 'ready'].join(' '));
 
-    startRepl(prompt, client, fPrint);
+    startRepl(fprompt, client, fPrint);
   });
 
-};
+}
+
+module.exports = Cli;

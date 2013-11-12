@@ -10,6 +10,11 @@ function Client(host, port, user, password, database) {
   this.database = database;
 }
 
+function setCurrentDatabase(self, database) {
+  self.database = database;
+  self.emit('change:database', database);
+}
+
 function url(ctx, db, query) {
   return Url.format({
     protocol: 'http:',
@@ -42,11 +47,11 @@ Client.prototype.query = function(query, options, f) {
 
   var USE_DATABASE_CMD = /use\s([^;]*)/g.exec(query);
   if (USE_DATABASE_CMD) {
-    this.database = USE_DATABASE_CMD[1];
+    setCurrentDatabase(this, USE_DATABASE_CMD[1]);
     return f(null);
   }
 
-  if (/^[quit|exit]/g.test(query)) {
+  if (query.toLowerCase().indexOf('quit') !== -1 || query.toLowerCase().indexOf('exit') !== -1) {
     this.emit('quit');
     return f(null);
   }
