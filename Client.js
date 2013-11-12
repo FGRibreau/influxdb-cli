@@ -3,6 +3,7 @@ var Url = require('url');
 var _ = require('lodash');
 
 module.exports = function Client(host, port, user, password, database) {
+  var _database = database;
 
   function url(db, query) {
     return Url.format({
@@ -32,8 +33,16 @@ module.exports = function Client(host, port, user, password, database) {
   // API
   return {
     query: function(query, options, f) {
+      query = query || '';
+
+      var USE_DATABASE_CMD = /use\s([^;]*)/g.exec(query);
+      if(USE_DATABASE_CMD){
+        _database = USE_DATABASE_CMD[1];
+        return f(null, _database);
+      }
+
       var params = _.defaults(options, {
-        q: query ||  '',
+        q: query,
         time_precision: 'm',
         chunked: false,
       });
@@ -66,6 +75,9 @@ module.exports = function Client(host, port, user, password, database) {
 
       //   return f(err, exist);
       // }));
+    },
+    getCurrentDatabase: function(){
+      return _database;
     }
   };
 };
