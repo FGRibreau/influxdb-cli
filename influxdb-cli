@@ -55,6 +55,10 @@ Cli(PROMPT, argv.hostname, argv.port, argv.user, argv.password, argv.database, f
     return console.error(PROMPT, '✘', err.toString());
   }
 
+  if (res === undefined || res === null) {
+    return;
+  }
+
   if (!Array.isArray(res)) {
     return console.log(PROMPT, res);
   }
