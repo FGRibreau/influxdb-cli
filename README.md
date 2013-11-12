@@ -51,3 +51,8 @@ Influx> SELECT used_memory, used_memory_lua, used_memory_peak from info limit 10
 └───────────────┴─────────────────┴─────────────┴─────────────────┴──────────────────┘
 Influx>
 ```
+
+### Commands
+
+`use [dbname]`: switch to database `dbname`.
+`quit`|`exit` : quit the cli
