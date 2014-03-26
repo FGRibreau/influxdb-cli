@@ -32,15 +32,16 @@ function url(ctx, db, query) {
   });
 }
 
-function parseCallback(f) {
+function parseCallback(f, start) {
   return function(err, res, body) {
+    var elapsed = +new Date() - start;
     if (err) {
-      return f(err);
+      return f(err, null, elapsed);
     }
     if (res.statusCode < 200 || res.statusCode >= 300) {
-      return f(new Error(body));
+      return f(new Error(body), null, elapsed);
     }
-    return f(null, body);
+    return f(null, body, elapsed);
   };
 }
 
@@ -67,10 +68,11 @@ Client.prototype.query = function(query, options, f) {
   });
 
   // console.log(url('db/' + database + '/series', params));
+  var start = +new Date();
   request({
     url: url(this, 'db/' + this.database + '/series', params),
     json: true
-  }, parseCallback(f));
+  }, parseCallback(f, start));
 };
 
 Client.prototype.existDatabase = function(dbName, f) {

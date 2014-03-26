@@ -12,8 +12,8 @@ function startRepl(fprompt, client, fPrint) {
   rl.question(prompt + ' ', function(query) {
     rl.pause();
 
-    client.query(query, {}, function(err, res) {
-      fPrint(prompt, err, res);
+    client.query(query, {}, function(err, res, elapsed) {
+      fPrint(prompt, err, res, elapsed);
       rl.resume();
       setImmediate(startRepl.bind(null, fprompt, client, fPrint));
     });

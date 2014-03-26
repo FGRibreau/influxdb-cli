@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+'use strict';
 
 var _ = require('lodash');
 var Cli = require('./Cli');
@@ -60,13 +61,13 @@ Cli(function prompt(database_name) {
   argv.user,
   argv.password,
   argv.database,
-  function print(prompt, err, res) {
+  function print(prompt, err, res, elapsed) {
     if (err) {
       return console.error(prompt, '✘', err.toString());
     }
 
     if (res === undefined || res === null) {
-      return console.log(prompt, "(empty result)");
+      return console.log(prompt, '(empty result)');
     }
 
 
@@ -102,6 +103,10 @@ Cli(function prompt(database_name) {
 
       if(truncated !== -1){
         console.log(['Too much rows returned (',truncated,') the response was truncated to 10000 rows'].join(''));
+      }
+
+      if(elapsed){
+        console.log('Query took ', elapsed ,'ms');
       }
     });
   });
