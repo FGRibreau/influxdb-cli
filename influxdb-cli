@@ -90,8 +90,18 @@ Cli(function prompt(database_name) {
         }
       });
 
+      var truncated = -1;
+      if(table.points.length > 10000){
+        truncated = table.points.length;
+        table.points = table.points.slice(0, 10000);
+      }
+
       asciitable.push.apply(asciitable, table.points);
 
       console.log(asciitable.toString());
+
+      if(truncated !== -1){
+        console.log(['Too much rows returned (',truncated,') the response was truncated to 10000 rows'].join(''));
+      }
     });
   });
