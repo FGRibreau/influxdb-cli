@@ -69,7 +69,9 @@ Cli(function prompt(database_name) {
     if (res === undefined || res === null) {
       return console.log(prompt, '(empty result)');
     }
-
+    
+    // don't display a new line if user just pressed enter
+    if(res === ''){ return; }
 
     if (!Array.isArray(res)) {
       return console.log(prompt, res);

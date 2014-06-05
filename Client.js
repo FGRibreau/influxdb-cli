@@ -55,6 +55,9 @@ Client.prototype.query = function(query, options, f) {
     setCurrentDatabase(this, USE_DATABASE_CMD[1]);
     return f(null);
   }
+  
+  // user just pressed enter
+  if(query == ''){ return f(null, ''); };
 
   if (query.toLowerCase().indexOf('quit') !== -1 || query.toLowerCase().indexOf('exit') !== -1) {
     this.emit('quit');
