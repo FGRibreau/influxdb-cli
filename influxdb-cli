@@ -99,6 +99,9 @@ Cli(function prompt(database_name) {
 
       asciitable.push.apply(asciitable, table.points);
 
+      if (res.length > 1) {
+        console.log(table.name);
+      }
       console.log(asciitable.toString());
 
       if(truncated !== -1){
