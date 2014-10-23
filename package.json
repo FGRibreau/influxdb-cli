@@ -15,6 +15,6 @@
     "lodash": "~2.2.1",
     "optimist": "~0.6.0",
     "request": "~2.27.0",
-    "cli-table": "git+https://github.com/FGRibreau/cli-table.git"
+    "cli-table": "~0.3.1"
   }
 }
