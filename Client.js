@@ -5,13 +5,14 @@ var Url = require('url');
 var _ = require('lodash');
 var EventEmitter = require('events').EventEmitter;
 
-function Client(host, port, user, password, database) {
+function Client(host, port, secure, user, password, database) {
   EventEmitter.call(this);
   this.host = host;
   this.port = port;
   this.user = user;
   this.password = password;
   this.database = database;
+  this.protocol = secure ? 'https:' : 'http:';
 }
 
 function setCurrentDatabase(self, database) {
@@ -21,7 +22,7 @@ function setCurrentDatabase(self, database) {
 
 function url(ctx, db, query) {
   return Url.format({
-    protocol: 'http:',
+    protocol: ctx.protocol,
     hostname: ctx.host,
     port: ctx.port,
     pathname: db,

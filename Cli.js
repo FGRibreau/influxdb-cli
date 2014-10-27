@@ -20,15 +20,17 @@ function startRepl(fprompt, client, fPrint) {
   });
 }
 
-function Cli(fprompt, host, port, user, password, database, fPrint) {
+function Cli(fprompt, host, port, secure, user, password, database, fPrint) {
   fPrint = fPrint || console.log.bind(console);
 
-  var client = new Client(host, port, user, password, database);
+  var client = new Client(host, port, secure, user, password, database);
   var prompt = fprompt(client.getCurrentDatabase());
 
   rl.setPrompt(prompt);
 
-  fPrint(prompt, null, ['Connecting to ', 'http://', host, ':', port, '/db/', database, ' ...'].join(''));
+  var protocol = secure ? 'https://' : 'http://';
+
+  fPrint(prompt, null, ['Connecting to ', protocol, host, ':', port, '/db/', database, ' ...'].join(''));
 
   client.on('change:database', function(database_name) {
     rl.setPrompt(fprompt(database_name));

@@ -23,6 +23,7 @@ Usage: node ./influxdb-cli
 Options:
   -h, --hostname  Host [%s]                             [default: "localhost"]
   --port          Port [%s]                             [default: 8086]
+  -s, --secure    Use HTTPS if flag is present          [default: false]
   -u, --user      User [%s]                             [default: "root"]
   -p, --password  Password [%s]                         [default: "root"]
   -d, --database  Database [%s]                         [default: "db"]

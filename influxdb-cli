@@ -17,6 +17,11 @@ var DEFAULTS = {
     description: 'Port [%s]',
     value: 8086
   },
+  secure: {
+    args: ['s', 'secure'],
+    description: 'Use HTTPS if flag is present',
+    value: false
+  },
   user: {
     args: ['u', 'user'],
     description: 'User [%s]',
@@ -58,6 +63,7 @@ Cli(function prompt(database_name) {
   },
   argv.hostname,
   argv.port,
+  argv.secure,
   argv.user,
   argv.password,
   argv.database,
