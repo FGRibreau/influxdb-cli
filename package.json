@@ -1,6 +1,6 @@
 {
   "name": "influxdb-cli",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "~SQL CLI for Influxdb",
   "main": "Cli.js",
   "bin": {
