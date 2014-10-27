@@ -81,3 +81,13 @@ redsmin>
 
 - `use [dbname]`: switch to database `dbname`.
 - `quit`|`exit` : quit the cli
+
+
+### History
+
+
+v0.1.3 (27 Oct. 2014)
+
+- [Feature] Add HTTPS support. #14 by @codyhanson
+- [Feature] Show series names #13 by @codyhanson
+- [Fix] Remove error message when just pressing enter #11 by @codyhanson 
