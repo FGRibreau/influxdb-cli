@@ -46,6 +46,12 @@ function parseCallback(f, start) {
   };
 }
 
+function parseVersionCallback(f, start) {
+    return function(err, res, body){
+        return f(null, res.headers['x-influxdb-version'], null);
+    }
+}
+
 Client.prototype.query = function(query, options, f) {
   query = (query || '').trim();
   options = options || {};
@@ -65,14 +71,33 @@ Client.prototype.query = function(query, options, f) {
     return f(null);
   }
 
+  var start = +new Date();
   var params = _.defaults(options, {
     q: query,
     time_precision: 'm',
-    chunked: false,
+    chunked: false
   });
 
+
+  // special command to ping the server
+  if (query.toLowerCase() === 'ping') {
+    request({
+      url: url(this, 'ping', params),
+      json: true
+    }, parseCallback(f, start));
+    return;
+  }
+
+  //special command to get the version from the server.
+  if (query.toLowerCase() === 'version') {
+    request({
+      url: url(this, 'ping', params),
+      json: true
+    }, parseVersionCallback(f, start));
+    return;
+  }
+
   // console.log(url('db/' + database + '/series', params));
-  var start = +new Date();
   request({
     url: url(this, 'db/' + this.database + '/series', params),
     json: true
