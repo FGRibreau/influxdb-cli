@@ -80,44 +80,45 @@ Cli(function prompt(database_name) {
     if(res === ''){ return; }
 
     if (!Array.isArray(res)) {
-      return console.log(prompt, res);
-    }
+      //we are printing a non-tabular response
+      console.log(prompt, res);
+    } else {
+      res.forEach(function(table) {
+        if (argv.pretty) {
+          table.points.forEach(function(point) {
+            var d = new Date(point[0]);
+            point[0] = d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear().toString().substring(2) + ' ' + d.toTimeString().substring(0, 8);
+          });
+          table.columns[0] = '      time     ';
+        }
 
-    res.forEach(function(table) {
-      if (argv.pretty) {
-        table.points.forEach(function(point) {
-          var d = new Date(point[0]);
-          point[0] = d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear().toString().substring(2) + ' ' + d.toTimeString().substring(0, 8);
+        var asciitable = new Table({
+          head: table.columns,
+          style: {
+            compact: true
+          }
         });
-        table.columns[0] = '      time     ';
-      }
 
-      var asciitable = new Table({
-        head: table.columns,
-        style: {
-          compact: true
+        var truncated = -1;
+        if(table.points.length > 10000){
+          truncated = table.points.length;
+          table.points = table.points.slice(0, 10000);
+        }
+
+        asciitable.push.apply(asciitable, table.points);
+
+        if (res.length > 1) {
+          console.log(table.name);
+        }
+        console.log(asciitable.toString());
+
+        if(truncated !== -1){
+          console.log(['Too much rows returned (',truncated,') the response was truncated to 10000 rows'].join(''));
         }
       });
-
-      var truncated = -1;
-      if(table.points.length > 10000){
-        truncated = table.points.length;
-        table.points = table.points.slice(0, 10000);
-      }
-
-      asciitable.push.apply(asciitable, table.points);
-
-      if (res.length > 1) {
-        console.log(table.name);
-      }
-      console.log(asciitable.toString());
-
-      if(truncated !== -1){
-        console.log(['Too much rows returned (',truncated,') the response was truncated to 10000 rows'].join(''));
-      }
-
-      if(elapsed){
-        console.log('Query took ', elapsed ,'ms');
-      }
-    });
-  });
+    }
+    if(elapsed){
+      console.log('Query took ', elapsed ,'ms');
+    }
+  }
+);

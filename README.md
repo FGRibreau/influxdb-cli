@@ -81,6 +81,8 @@ redsmin>
 
 - `use [dbname]`: switch to database `dbname`.
 - `quit`|`exit` : quit the cli
+- `ping` : send the ping query
+- `version` : get the database versopm from the connected server.
 
 
 ### History
