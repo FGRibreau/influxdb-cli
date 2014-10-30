@@ -87,6 +87,9 @@ redsmin>
 
 ### History
 
+v0.1.4 (30 Oct. 2014)
+
+- [Feature] new `ping` and `version` commands #15 by @codyhanson
 
 v0.1.3 (27 Oct. 2014)
 
