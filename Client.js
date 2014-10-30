@@ -48,6 +48,9 @@ function parseCallback(f, start) {
 
 function parseVersionCallback(f, start) {
     return function(err, res, body){
+        if (err){
+            return f(err, null, null);
+        }
         return f(null, res.headers['x-influxdb-version'], null);
     }
 }
