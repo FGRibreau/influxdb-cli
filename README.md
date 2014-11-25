@@ -87,6 +87,11 @@ redsmin>
 
 ### History
 
+v0.2.0 (25 Nov. 2014)
+
+- [Feature] add new `-auth` option
+- [Fix] exit as soon as possible fixes [#12](https://github.com/FGRibreau/influxdb-cli/issues/12)
+
 v0.1.4 (30 Oct. 2014)
 
 - [Feature] new `ping` and `version` commands #15 by @codyhanson

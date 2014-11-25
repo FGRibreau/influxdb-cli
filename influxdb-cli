@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 'use strict';
 
 var _ = require('lodash');
@@ -27,6 +28,11 @@ var DEFAULTS = {
     description: 'User [%s]',
     value: 'root'
   },
+  auth: {
+    args: ['a', 'auth'],
+    description: 'HTTP basic auth [%s]',
+    value: ''
+  },
   password: {
     args: ['p', 'password'],
     description: 'Password [%s]',
@@ -39,7 +45,7 @@ var DEFAULTS = {
   }
 };
 
-_.forEach(DEFAULTS, function(v, k) {
+_.forEach(DEFAULTS, function (v, k) {
   argv.describe(v.args[0], v.description);
   if (v.args.length > 1) {
     argv.alias.apply(argv, v.args);
@@ -61,6 +67,7 @@ argv = argv.argv;
 Cli(function prompt(database_name) {
     return database_name + '>';
   },
+  argv.auth,
   argv.hostname,
   argv.port,
   argv.secure,
@@ -75,17 +82,19 @@ Cli(function prompt(database_name) {
     if (res === undefined || res === null) {
       return console.log(prompt, '(empty result)');
     }
-    
+
     // don't display a new line if user just pressed enter
-    if(res === ''){ return; }
+    if (res === '') {
+      return;
+    }
 
     if (!Array.isArray(res)) {
       //we are printing a non-tabular response
       console.log(prompt, res);
     } else {
-      res.forEach(function(table) {
+      res.forEach(function (table) {
         if (argv.pretty) {
-          table.points.forEach(function(point) {
+          table.points.forEach(function (point) {
             var d = new Date(point[0]);
             point[0] = d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear().toString().substring(2) + ' ' + d.toTimeString().substring(0, 8);
           });
@@ -100,7 +109,7 @@ Cli(function prompt(database_name) {
         });
 
         var truncated = -1;
-        if(table.points.length > 10000){
+        if (table.points.length > 10000) {
           truncated = table.points.length;
           table.points = table.points.slice(0, 10000);
         }
@@ -112,13 +121,13 @@ Cli(function prompt(database_name) {
         }
         console.log(asciitable.toString());
 
-        if(truncated !== -1){
-          console.log(['Too much rows returned (',truncated,') the response was truncated to 10000 rows'].join(''));
+        if (truncated !== -1) {
+          console.log(['Too much rows returned (', truncated, ') the response was truncated to 10000 rows'].join(''));
         }
       });
     }
-    if(elapsed){
-      console.log('Query took ', elapsed ,'ms');
+    if (elapsed) {
+      console.log('Query took ', elapsed, 'ms');
     }
   }
 );

@@ -5,8 +5,19 @@ var Url = require('url');
 var _ = require('lodash');
 var EventEmitter = require('events').EventEmitter;
 
-function Client(host, port, secure, user, password, database) {
+/**
+ * [Client description]
+ * @param {String=} auth    basic auth. eg. "user:password"
+ * @param {String} host     [description]
+ * @param {String} port     [description]
+ * @param {String} secure   [description]
+ * @param {String} user     [description]
+ * @param {String} password [description]
+ * @param {String} database [description]
+ */
+function Client(basic_auth, host, port, secure, user, password, database) {
   EventEmitter.call(this);
+  this.basic_auth = basic_auth;
   this.host = host;
   this.port = port;
   this.user = user;
@@ -23,6 +34,7 @@ function setCurrentDatabase(self, database) {
 function url(ctx, db, query) {
   return Url.format({
     protocol: ctx.protocol,
+    auth: ctx.basic_auth,
     hostname: ctx.host,
     port: ctx.port,
     pathname: db,
@@ -34,7 +46,7 @@ function url(ctx, db, query) {
 }
 
 function parseCallback(f, start) {
-  return function(err, res, body) {
+  return function (err, res, body) {
     var elapsed = +new Date() - start;
     if (err) {
       return f(err, null, elapsed);
@@ -47,27 +59,29 @@ function parseCallback(f, start) {
 }
 
 function parseVersionCallback(f, start) {
-    return function(err, res, body){
-        if (err){
-            return f(err, null, null);
-        }
-        return f(null, res.headers['x-influxdb-version'], null);
+  return function (err, res, body) {
+    if (err) {
+      return f(err, null, null);
     }
+    return f(null, res.headers['x-influxdb-version'], null);
+  }
 }
 
-Client.prototype.query = function(query, options, f) {
+Client.prototype.query = function (query, options, f) {
   query = (query || '').trim();
   options = options || {};
-  f = f || function() {};
+  f = f || function () {};
 
   var USE_DATABASE_CMD = /use\s([^;]*)/g.exec(query);
   if (USE_DATABASE_CMD) {
     setCurrentDatabase(this, USE_DATABASE_CMD[1]);
     return f(null);
   }
-  
+
   // user just pressed enter
-  if(query == ''){ return f(null, ''); };
+  if (query == '') {
+    return f(null, '');
+  };
 
   if (query.toLowerCase().indexOf('quit') !== -1 || query.toLowerCase().indexOf('exit') !== -1) {
     this.emit('quit');
@@ -107,30 +121,29 @@ Client.prototype.query = function(query, options, f) {
   }, parseCallback(f, start));
 };
 
-Client.prototype.existDatabase = function(dbName, f) {
-  return f(null, true);
+/**
+ * [canConnect description]
+ * @param  {Function} f(err)
+ */
+Client.prototype.canConnect = function (f) {
+  var _url = url(this, 'ping', {});
+  request({
+    url: _url,
+    json: true
+  }, function (err, res, body) {
+    if (err) {
+      return f(err);
+    }
 
-  // Only work for admins
-  // @todo fix this
-  // console.log(url('dbs'));
-  // request({
-  //   url: url('db/' + database + '/series'),
-  //   json: true
-  // }, parseCallback(function(err, dbs) {
-  //   if (err) {
-  //     return f(err, dbs);
-  //   }
+    if (body.status !== 'ok') {
+      return f(new Error('Can\'t connect to database, got: \n' + body));
+    }
 
-  //   var exist = _.find(dbs, function(db) {
-  //     return db.name === dbName;
-  //   });
-
-
-  //   return f(err, exist);
-  // }));
+    f();
+  });
 };
 
-Client.prototype.getCurrentDatabase = function() {
+Client.prototype.getCurrentDatabase = function () {
   return this.database;
 };
 
